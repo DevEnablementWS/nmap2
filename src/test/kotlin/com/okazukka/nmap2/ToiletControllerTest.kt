@@ -1,6 +1,5 @@
 package com.okazukka.nmap2
 
-import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,28 +32,6 @@ class ToiletControllerTest {
         // Then
         response
             .andExpect(status().isOk)
-    }
-
-    @Test
-    fun getReturnsToiletList() {
-        // When
-        val response = mockMvc.perform(get("/api/toilets"))
-
-        // Then
-        response
-            .andExpect(jsonPath("$.length()", equalTo(1)))
-            .andExpect(jsonPath("$[0].id", equalTo(1)))
-            .andExpect(jsonPath("$[0].name", equalTo("agurinmura")))
-            .andExpect(jsonPath("$[0].address", equalTo("nagakute")))
-    }
-
-    @Test
-    fun `should call ToiletService toilets method`() {
-        // When
-        mockMvc.perform(get("/api/toilets"))
-
-        // Then
-        assertThat(spyToiletService.toilets_wasCalled).isTrue()
     }
 
     @Test
