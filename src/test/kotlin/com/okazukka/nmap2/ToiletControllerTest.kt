@@ -1,10 +1,14 @@
 package com.okazukka.nmap2
 
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
@@ -55,4 +59,46 @@ class ToiletControllerTest {
             .andExpect(jsonPath("$[1].name", equalTo("toilet x")))
             .andExpect(jsonPath("$[1].address", equalTo("nagoya")))
     }
+
+    @Test
+    fun `post returns 200 OK`() {
+        // When
+        val response = mockMvc.perform(post("/api/toilets"))
+
+        // Then
+        response
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should called ToiletService add method`() {
+        // When
+        mockMvc.perform(post("/api/toilets"))
+
+        // Then
+        assertThat(spyToiletService.add_wasCalled).isTrue()
+    }
+
+    @Test
+    fun `should give toilet service add method given request body`() {
+        // When
+        mockMvc.post("/api/toilets") {
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """
+                    {
+                    "id": 1,
+                    "name": "agurinmura",
+                    "address": "nagakute"
+                    }
+                """.trimIndent()
+        }
+
+        // Then
+        assertThat(spyToiletService.add_arg_toilet)
+            .isEqualTo(Toilet(1,"agurinmura", "nagakute"))
+
+    }
+
+
 }
