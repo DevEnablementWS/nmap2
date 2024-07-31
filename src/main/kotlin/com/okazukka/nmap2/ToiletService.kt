@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 
 interface ToiletService {
     fun toilets(): List<Toilet>
-    fun add(toilet: Toilet)
+    fun add(name: String, address: String): Toilet
 }
 
 
@@ -14,8 +14,9 @@ class ToiletServiceImpl(private val toiletRepository: ToiletRepository) : Toilet
         return toiletRepository.findAll().map { Toilet(it.id, it.name, it.address) }
     }
 
-    override fun add(toilet: Toilet) {
-        toiletRepository.save(ToiletEntity(toilet.id, toilet.name, toilet.address))
+    override fun add(name: String, address: String): Toilet {
+        val entity = toiletRepository.save(ToiletEntity(0, name, address))
+        return Toilet(entity.id, entity.name, entity.address)
     }
 }
 

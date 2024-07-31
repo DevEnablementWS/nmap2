@@ -12,16 +12,33 @@ class ToiletController(
     val toiletService: ToiletService,
 ) {
     @GetMapping
-    fun get(): List<Toilet> {
-        return toiletService.toilets()
+    fun get(): List<GetToiletResponseData> {
+        return toiletService.toilets().map { GetToiletResponseData(it.id, it.name, it.address) }
     }
 
     @PostMapping
-    fun post(@RequestBody toilet: Toilet) {
-        toiletService.add(toilet)
+    fun post(@RequestBody requestBody: PostToiletRequestBody): PostToiletResponseData {
+        val toilet = toiletService.add(requestBody.name, requestBody.address)
+        return PostToiletResponseData(toilet.id, toilet.name, toilet.address)
     }
 }
 
+data class GetToiletResponseData(
+    val id: Long,
+    val name: String,
+    val address: String,
+)
+
+data class PostToiletRequestBody(
+    val name: String,
+    val address: String,
+)
+
+data class PostToiletResponseData(
+    val id: Long,
+    val name: String,
+    val address: String,
+)
 
 
 //(

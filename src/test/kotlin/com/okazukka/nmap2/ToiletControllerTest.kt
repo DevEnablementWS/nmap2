@@ -3,6 +3,7 @@ package com.okazukka.nmap2
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -28,77 +29,105 @@ class ToiletControllerTest {
         ).build()
     }
 
-    @Test
-    fun getReturns200OK() {
-        // When
-        val response = mockMvc.perform(get("/api/toilets"))
+    @Nested
+    inner class Get {
+        @Test
+        fun getReturns200OK() {
+            // When
+            val response = mockMvc.perform(get("/api/toilets"))
 
-        // Then
-        response
-            .andExpect(status().isOk)
+            // Then
+            response
+                .andExpect(status().isOk)
+        }
+
+        @Test
+        fun `should return ToiletService toilets List`() {
+            // Given
+            spyToiletService.toilets_returnValue = listOf(
+                Toilet(1, "agurinmura", "nagakute"),
+                Toilet(2, "toilet x", "nagoya"),
+            )
+
+            // When
+            val response = mockMvc.perform(get("/api/toilets"))
+
+            // Then
+            response
+                .andExpect(jsonPath("$.length()", equalTo(2)))
+                .andExpect(jsonPath("$[0].id", equalTo(1)))
+                .andExpect(jsonPath("$[0].name", equalTo("agurinmura")))
+                .andExpect(jsonPath("$[0].address", equalTo("nagakute")))
+                .andExpect(jsonPath("$[1].id", equalTo(2)))
+                .andExpect(jsonPath("$[1].name", equalTo("toilet x")))
+                .andExpect(jsonPath("$[1].address", equalTo("nagoya")))
+        }
     }
 
-    @Test
-    fun `should return ToiletService toilets List`() {
-        // Given
-        spyToiletService.toilets_returnValue = listOf(
-            Toilet(1, "agurinmura", "nagakute"),
-            Toilet(2, "toilet x", "nagoya"),
-        )
+    @Nested
+    inner class Post {
+        @Test
+        fun `post returns 200 OK`() {
+            // When
+            val response = mockMvc.perform(post("/api/toilets"))
 
-        // When
-        val response = mockMvc.perform(get("/api/toilets"))
+            // Then
+            response
+                .andExpect(status().isOk)
+        }
 
-        // Then
-        response
-            .andExpect(jsonPath("$.length()", equalTo(2)))
-            .andExpect(jsonPath("$[0].id", equalTo(1)))
-            .andExpect(jsonPath("$[0].name", equalTo("agurinmura")))
-            .andExpect(jsonPath("$[0].address", equalTo("nagakute")))
-            .andExpect(jsonPath("$[1].id", equalTo(2)))
-            .andExpect(jsonPath("$[1].name", equalTo("toilet x")))
-            .andExpect(jsonPath("$[1].address", equalTo("nagoya")))
-    }
+        @Test
+        fun `should called ToiletService add method`() {
+            // When
+            mockMvc.perform(post("/api/toilets"))
 
-    @Test
-    fun `post returns 200 OK`() {
-        // When
-        val response = mockMvc.perform(post("/api/toilets"))
+            // Then
+            assertThat(spyToiletService.add_wasCalled).isTrue()
+        }
 
-        // Then
-        response
-            .andExpect(status().isOk)
-    }
-
-    @Test
-    fun `should called ToiletService add method`() {
-        // When
-        mockMvc.perform(post("/api/toilets"))
-
-        // Then
-        assertThat(spyToiletService.add_wasCalled).isTrue()
-    }
-
-    @Test
-    fun `should give toilet service add method given request body`() {
-        // When
-        mockMvc.post("/api/toilets") {
-            contentType = MediaType.APPLICATION_JSON
-            content =
-                """
+        @Test
+        fun `should give toilet service add method given request body`() {
+            // When
+            mockMvc.post("/api/toilets") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
                     {
-                    "id": 1,
                     "name": "agurinmura",
                     "address": "nagakute"
                     }
                 """.trimIndent()
+            }
+
+            // Then
+            assertThat(spyToiletService.add_arg_name)
+                .isEqualTo("agurinmura")
+            assertThat(spyToiletService.add_arg_address)
+                .isEqualTo("nagakute")
         }
 
-        // Then
-        assertThat(spyToiletService.add_arg_toilet)
-            .isEqualTo(Toilet(1,"agurinmura", "nagakute"))
+        @Test
+        fun `should call toilet service add method then return created toilet data`() {
+            // Given
+            spyToiletService.add_returnValue = Toilet(5432, "toilet-x", "address-x")
 
+            // When
+            mockMvc.post("/api/toilets") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {
+                    "name": "toilet-x",
+                    "address": "address-x"
+                    }
+                """.trimIndent()
+            }
+                .andExpect {
+                    jsonPath("$.id", equalTo(5432))
+                    jsonPath("$.name", equalTo("toilet-x"))
+                    jsonPath("$.address", equalTo("address-x"))
+                }
+
+        }
     }
-
-
 }

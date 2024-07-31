@@ -47,12 +47,33 @@ class ToiletServiceTest {
     }
     @Test
     fun `should save given toilet in database`() {
-        //Given
+        // Given
 
+        // When
+        toiletService.add(
+            "okatoilet",
+            "okasecret",
+            )
+
+        // Then
+        val entities = toiletRepository.findAll()
+        assertThat(entities.size).isEqualTo(1)
+        assertThat(entities[0].name).isEqualTo("okatoilet")
+        assertThat(entities[0].address).isEqualTo("okasecret")
+    }
+    @Test
+    fun `should return data from service when add method is called`() {
         //When
-        toiletService.add(Toilet(2, "okatoilet", "okasecret"))
+        val actualToilet = toiletService.add(
+            "okatoilet",
+            "okasecret",
+        )
 
         //Then
-        assertThat(toiletRepository.findAll()).isEqualTo(listOf(ToiletEntity(2, "okatoilet", "okasecret")))
+        val entities = toiletRepository.findAll()
+        assertThat(entities.size).isEqualTo(1)
+        assertThat(entities[0].id).isEqualTo(actualToilet.id)
+        assertThat(entities[0].name).isEqualTo(actualToilet.name)
+        assertThat(entities[0].address).isEqualTo(actualToilet.address)
     }
 }
