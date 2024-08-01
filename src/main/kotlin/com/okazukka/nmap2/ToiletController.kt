@@ -16,6 +16,11 @@ class ToiletController(
         return toiletService.toilets().map { GetToiletResponseData(it.id, it.name, it.address) }
     }
 
+    @GetMapping("/okazukka")
+    fun getOkazukka(): String {
+        return "Hello okazukka!!"
+    }
+
     @PostMapping
     fun post(@RequestBody requestBody: PostToiletRequestBody): PostToiletResponseData {
         val toilet = toiletService.add(requestBody.name, requestBody.address)

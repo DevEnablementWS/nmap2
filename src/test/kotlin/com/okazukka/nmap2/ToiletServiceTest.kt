@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.SpringBootTest
 
 @DataJpaTest
 class ToiletServiceTest {
@@ -29,7 +28,7 @@ class ToiletServiceTest {
             name = "name-1",
             address = "address-1",
         )
-        val savedEntity = toiletRepository.save(toiletEntity)
+        val savedEntity = toiletRepository.saveAndFlush(toiletEntity)
 
         // When
         val actualToilets = toiletService.toilets()

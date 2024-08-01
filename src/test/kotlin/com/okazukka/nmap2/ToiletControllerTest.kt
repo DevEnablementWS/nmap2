@@ -69,17 +69,32 @@ class ToiletControllerTest {
         @Test
         fun `post returns 200 OK`() {
             // When
-            val response = mockMvc.perform(post("/api/toilets"))
-
-            // Then
-            response
-                .andExpect(status().isOk)
+            mockMvc.post("/api/toilets") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {
+                    "name": "agurinmura",
+                    "address": "nagakute"
+                    }
+                """.trimIndent()
+            }
+                .andExpect { status().isOk }
         }
 
         @Test
         fun `should called ToiletService add method`() {
             // When
-            mockMvc.perform(post("/api/toilets"))
+            mockMvc.post("/api/toilets") {
+                contentType = MediaType.APPLICATION_JSON
+                content =
+                    """
+                    {
+                    "name": "agurinmura",
+                    "address": "nagakute"
+                    }
+                """.trimIndent()
+            }
 
             // Then
             assertThat(spyToiletService.add_wasCalled).isTrue()
