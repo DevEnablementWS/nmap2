@@ -45,7 +45,6 @@ data class PostToiletResponseData(
     val address: String,
 )
 
-
 //(
 //'1'
 //'あぐりん村',
