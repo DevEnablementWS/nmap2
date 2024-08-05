@@ -1,5 +1,6 @@
 package com.okazukka.nmap2
 
+import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 class ToiletServiceTest {
     @Autowired
     lateinit var toiletRepository: ToiletRepository
+    @Autowired
+    lateinit var makerRepository: MakerRepository
 
     lateinit var toiletService: ToiletService
 
@@ -74,5 +77,40 @@ class ToiletServiceTest {
         assertThat(entities[0].id).isEqualTo(actualToilet.id)
         assertThat(entities[0].name).isEqualTo(actualToilet.name)
         assertThat(entities[0].address).isEqualTo(actualToilet.address)
+    }
+
+    @Test
+    @Transactional
+    fun `test`() {
+        // Given
+        val makerEntity = MakerEntity(
+            id = 0,
+            companyName = "TOTO",
+        )
+        val savedMakerEntity = makerRepository.saveAndFlush(makerEntity)
+
+        val toiletEntity1 = ToiletEntity(
+            id = 0,
+            name = "name-1",
+            address = "address-1",
+            maker = savedMakerEntity,
+        )
+        val toiletEntity2 = ToiletEntity(
+            id = 0,
+            name = "name-2",
+            address = "address-2",
+            maker = savedMakerEntity,
+        )
+        toiletRepository.saveAndFlush(toiletEntity1)
+        toiletRepository.saveAndFlush(toiletEntity2)
+
+
+        val readMakerEntity = makerRepository.findAll().first()
+        val readToiletEntities = toiletRepository.findAll()
+        val toilets = readMakerEntity.toilets
+        println("=======================")
+        println(toilets)
+        println(readToiletEntities)
+        println("=======================")
     }
 }
