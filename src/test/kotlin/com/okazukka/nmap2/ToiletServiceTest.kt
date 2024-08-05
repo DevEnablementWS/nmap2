@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 
 @DataJpaTest
 class ToiletServiceTest {
@@ -13,6 +14,9 @@ class ToiletServiceTest {
     lateinit var toiletRepository: ToiletRepository
     @Autowired
     lateinit var makerRepository: MakerRepository
+
+    @Autowired
+    lateinit var entityManager: TestEntityManager
 
     lateinit var toiletService: ToiletService
 
@@ -103,6 +107,8 @@ class ToiletServiceTest {
         )
         toiletRepository.saveAndFlush(toiletEntity1)
         toiletRepository.saveAndFlush(toiletEntity2)
+
+        entityManager.clear()
 
 
         val readMakerEntity = makerRepository.findAll().first()
