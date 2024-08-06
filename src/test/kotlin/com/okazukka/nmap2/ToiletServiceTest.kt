@@ -113,9 +113,8 @@ class ToiletServiceTest {
 
         val readMakerEntity = makerRepository.findAll().first()
         val readToiletEntities = toiletRepository.findAll()
-        val toilets = readMakerEntity.toilets
         println("=======================")
-        println(toilets)
+        println(readMakerEntity.toilets)
         println(readToiletEntities)
         println("=======================")
     }
