@@ -26,6 +26,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.flywaydb:flyway-core:10.17.0")
 	implementation("org.flywaydb:flyway-database-postgresql:10.17.0")
+	testImplementation("io.mockk:mockk:1.13.12")
+
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

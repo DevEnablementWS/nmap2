@@ -8,6 +8,7 @@ class ToiletEntity(
     val id: Long,
     val name: String,
     val address: String,
+    val area: String,
 
     @ManyToOne
     @JoinColumn(name = "maker_id")

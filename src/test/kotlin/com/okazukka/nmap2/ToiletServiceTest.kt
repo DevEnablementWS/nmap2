@@ -34,6 +34,7 @@ class ToiletServiceTest {
             id = 0,
             name = "name-1",
             address = "address-1",
+            area = "Tokyo"
         )
         val savedEntity = toiletRepository.saveAndFlush(toiletEntity)
 
@@ -98,12 +99,14 @@ class ToiletServiceTest {
             name = "name-1",
             address = "address-1",
             maker = savedMakerEntity,
+            area = "Aichi"
         )
         val toiletEntity2 = ToiletEntity(
             id = 0,
             name = "name-2",
             address = "address-2",
             maker = savedMakerEntity,
+            area = "Tokyo"
         )
         toiletRepository.saveAndFlush(toiletEntity1)
         toiletRepository.saveAndFlush(toiletEntity2)

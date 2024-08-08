@@ -17,7 +17,7 @@ class ToiletServiceImpl(private val toiletRepository: ToiletRepository) : Toilet
     }
 
     override fun add(name: String, address: String): Toilet {
-        val entity = toiletRepository.save(ToiletEntity(0, name, address))
+        val entity = toiletRepository.save(ToiletEntity(0, name, address, "Aichi"))
         return Toilet(entity.id, entity.name, entity.address)
     }
 }
